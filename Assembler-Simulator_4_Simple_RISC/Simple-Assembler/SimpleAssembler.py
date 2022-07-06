@@ -1,10 +1,8 @@
+import sys
 global error
 global Flag 
-error=False
-f=open("test_case1.txt")
-c=f.read()
-file=c.splitlines()
-print(file)
+                                    
+file= sys.stdin.read().splitlines()
 
 Registeraddress={
     "R0":"000","R1":"001","R2":"010","R3":"011",
@@ -211,8 +209,8 @@ for line in file:
         address+=1
         variables[lst[1]]=address
 
-print(labels)
-print(variables)
+# print(labels)
+# print(variables)
 for line in file:
     if(len(line)==0):
         continue
