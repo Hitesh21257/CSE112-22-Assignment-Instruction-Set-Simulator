@@ -1,8 +1,8 @@
-import sys
+import sys                                  
+file= sys.stdin.read().splitlines()
 global error
 global Flag 
-                                    
-# file= sys.stdin.read().splitlines()
+error=False
 
 Registeraddress={
     "R0":"000","R1":"001","R2":"010","R3":"011",
@@ -101,12 +101,12 @@ def checkF(lst,i):
 
 def varChecker(lst,i):
     if len(lst) == 2 and lst[0]=="var":
+        if lst[1].isdigit() or not lst[1].isalnum() or lst[1][0].isdigit():
+            raise SyntaxError(f'Invalid variable name in line {i+1}')
         if lst[1] not in variable:
             variable.append(lst[1])
         else:
-            raise SyntaxError(f'Syntax error: Illegial use of variables at line {i+1}')
-    else:
-        raise SyntaxError(f'Syntax error: Same variable name already used at line {i+1}')
+            raise SyntaxError(f'Same variable name already used at line {i+1}')
 
 def labChecker(lst,i):
     if(lst[0][-1]==":"):
@@ -115,9 +115,22 @@ def labChecker(lst,i):
         else:
             raise SyntaxError(f'multiple declaration cannot be used for label')
 
-def hltChecker(lst,i):
-    if(lst[0]!="hlt"):
-        raise SyntaxError(f'hlt is not found at the last of the instruction ')
+def hltCheck():
+    p=0
+    q=1
+    count_halt = 0
+    for line in file:
+        if line.split(":")[-1].strip()=="hlt":
+            count_halt+=1
+            q=0
+        elif q:
+            p+=1
+    if count_halt==0:
+        raise SyntaxError("No halt found")
+    elif count_halt>1 or not file[-1].split(":")[-1].strip()=="hlt":
+        raise SyntaxError(f'Invalid halt at line {p+1}')
+
+hltCheck()
 
 i=0
 for line in file:
@@ -136,37 +149,39 @@ for line in file:
 
 j=0
 for line in file:
+    line=line.strip()
     if(len(line)==0):
         pass
     lst=list(map(str,line.split()))
-
-    if(j==len(file)-1):
-        hltChecker(lst,i)
-    if(lst[0][:-1] in label):
-        lst.pop(0)
-    if(len(lst)==0):
-        raise SyntaxError(f'invalid syntax for label is used in line no {i+1}')
-    if(lst[0] not in symbol):
-         raise SyntaxError(f"invalid instruction is used in line no{i+1}")
-    if(lst[0]=="mov"):
-        if(lst[2][0]=="$"):
-            lst[0]="mov1"
-        else:
-            lst[0]="mov2"
-    if(Instructions[lst[0]][0]=="A"):
-        checkA(lst,j)
-    elif(Instructions[lst[0]][0]=="B"):
-        checkB(lst,j)
-    elif(Instructions[lst[0]][0]=="C"):
-        checkC(lst,j)
-    elif(Instructions[lst[0]][0]=="D"):
-        checkD(lst,j)
-    elif(Instructions[lst[0]][0]=="E"):
-        checkE(lst,j)
-    elif(Instructions[lst[0]][0]=="F"):
-        checkF(lst,j)
+    if lst[0]=="var":
+        pass
+    
     else:
-        SyntaxError(f"invalid syntax used in line no{j+1}")
+        if(lst[0][:-1] in label):
+            lst.pop(0)
+        if(len(lst)==0):
+            raise SyntaxError(f'invalid syntax for label is used in line no {j+1}')
+        if(lst[0] not in symbol):
+            raise SyntaxError(f"invalid instruction is used in line no{j+1}")
+        if(lst[0]=="mov"):
+            if(lst[2][0]=="$"):
+                lst[0]="mov1"
+            else:
+                lst[0]="mov2"
+        if(Instructions[lst[0]][0]=="A"):
+            checkA(lst,j)
+        elif(Instructions[lst[0]][0]=="B"):
+            checkB(lst,j)
+        elif(Instructions[lst[0]][0]=="C"):
+            checkC(lst,j)
+        elif(Instructions[lst[0]][0]=="D"):
+            checkD(lst,j)
+        elif(Instructions[lst[0]][0]=="E"):
+            checkE(lst,j)
+        elif(Instructions[lst[0]][0]=="F"):
+            checkF(lst,j)
+        else:
+            SyntaxError(f"invalid syntax used in line no{j+1}")
     j+=1
 
 
@@ -197,8 +212,6 @@ for line in file:
     lst=list(line.split())
     if(lst[0] in symbol):
         address+=1
-    if(lst[0]=='hlt'):
-        labels[lst[0]]=address
     if(lst[0][-1]==":"):
         address+=1
         labels[lst[0][:-1]]=address
@@ -208,10 +221,9 @@ for line in file:
     if(lst[0]=='var'):
         address+=1
         variables[lst[1]]=address
-
-# print(labels)
-# print(variables)
+        
 for line in file:
+    line=line.strip()
     if(len(line)==0):
         continue
 
