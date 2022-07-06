@@ -1,4 +1,4 @@
-import sys                                  
+import sys
 file= sys.stdin.read().splitlines()
 global error
 global Flag 
@@ -10,7 +10,7 @@ Registeraddress={
     "FLAGS":"111"
 }
 Instructions={
-    "add":["A","10000"],"Sub":["A","10001"],"mul":["A","10110"],"xor":["A","11010"],"or":["A","11011"],"and":["A","11100"],
+    "add":["A","10000"],"sub":["A","10001"],"mul":["A","10110"],"xor":["A","11010"],"or":["A","11011"],"and":["A","11100"],
     "mov1":["B","10010"],"ls":["B","11001"],"rs":["B","11000"],
     "mov2":["C","10011"],"div":["C","10111"],"not":["C","11101"],"cmp":["C","11110"],
     "ld":["D","10100"],"st":["D","10101"],
