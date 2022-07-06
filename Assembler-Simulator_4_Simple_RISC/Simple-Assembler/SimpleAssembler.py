@@ -2,7 +2,7 @@ import sys
 global error
 global Flag 
                                     
-file= sys.stdin.read().splitlines()
+# file= sys.stdin.read().splitlines()
 
 Registeraddress={
     "R0":"000","R1":"001","R2":"010","R3":"011",
