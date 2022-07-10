@@ -60,14 +60,14 @@ def checkB(lst,i):
                     raise SyntaxError(f'Syntax error: Illegal immediate value at line {i+1}')
         else:
             raise SyntaxError(f'Syntax error: Typos in instruction name or register at line {i+1}')
+
 def checkC(lst,i):
     if(len(lst)!=3):
-        raise SyntaxError(f"syntax error invalid syntax for {lst[0]} in line no{i+1}")
-    if(lst[1]=="FLAGS" or lst[1] not in register):
-        raise SyntaxError(f"Invalid syntax in line no {i+1}")
-    if(lst[0]=="mov2" and lst[2] not in flagreg):
+        raise SyntaxError(f"Invalid syntax for {lst[0]} in line no{i+1}")
+    if(lst[0]=="mov2" and lst[1]=="FLAGS" and lst[2]=="FLAGS"):
         raise SyntaxError(f"Invalid register or flag is defined in line no {i+1}")
-    elif(lst[0]!="mov2" and lst[2] not in register):
+    if(lst[0]!="mov2" and lst[1] not in register or lst[2] not in register):
+        print(lst)
         raise SyntaxError(f"Invalid syntax in line no {i+1}")
 
 def checkD(lst,i):
